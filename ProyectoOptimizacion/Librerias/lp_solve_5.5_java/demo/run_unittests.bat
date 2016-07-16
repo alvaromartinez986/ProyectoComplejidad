@@ -1,0 +1,1 @@
+java -cp .\unittests.jar;..\lib\lpsolve55j.jar;..\lib\junit.jar LpSolveTest

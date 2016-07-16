@@ -1,0 +1,2 @@
+
+java -cp ./demo.jar:../lib/lpsolve55j.jar -Djava.library.path=/usr/local/lib Demo
