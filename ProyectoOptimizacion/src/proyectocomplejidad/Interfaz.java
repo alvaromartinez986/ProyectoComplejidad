@@ -155,7 +155,7 @@ public class Interfaz extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mes", "Precipitación", "Temperatura", "Demanda max", "Demanda min"
+                "Mes", "Temperatura", "Precipitación", "Demanda max", "Demanda min"
             }
         ) {
             Class[] types = new Class [] {
