@@ -38,14 +38,13 @@ public class ProyectoComplejidad {
     }
 
     public void setMeses(int meses) {
-        
+
         vector_temperatura = new int[meses];
         vector_precipitacion = new int[meses];
         vector_demanda_minima = new int[meses];
         vector_demanda_maxima = new int[meses];
         ganancias = new double[meses];
 
-        
         this.meses = meses;
     }
 
@@ -258,23 +257,44 @@ public class ProyectoComplejidad {
         System.out.println("==========CONDICIONES NO SE PUEDE SEMBRAR EN LOS ULTIMOS MESES==========");
         //Condicion no se puede sembrar en los ultimos 3 meses porque no se alcanzaria a recoger la cosecha
         String condicion_ultimos_meses = "";
-        for (int i = 1; i < 4; i++) {
-            for (int j = 0; i < meses; i++) {
-                arreglo_condicion[j] = 0;
-            }
-            arreglo_condicion[meses - i] = 1;
-
-            for (int j = 0; j < meses; j++) {
-                condicion_ultimos_meses += "" + arreglo_condicion[j] + " ";
-            }
-            System.out.println(condicion_ultimos_meses);
-            condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses
-            condicion_ultimos_meses = "";
+        int tamanio_arreglo = arreglo_condicion.length;
+        for (int i = 0; i < meses; i++) {
+            arreglo_condicion[i] = 0;
         }
+        arreglo_condicion[tamanio_arreglo - 1] = 1;
 
+        for (int j = 0; j < meses; j++) {
+            condicion_ultimos_meses += "" + arreglo_condicion[j] + " ";
+        }
+        System.out.println(condicion_ultimos_meses);
+        condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses
+        condicion_ultimos_meses = "";
+
+        for (int i = 0; i < meses; i++) {
+            arreglo_condicion[i] = 0;
+        }
+        arreglo_condicion[tamanio_arreglo - 2] = 1;
+        for (int j = 0; j < meses; j++) {
+            condicion_ultimos_meses += "" + arreglo_condicion[j] + " ";
+        }
+        System.out.println(condicion_ultimos_meses);
+        condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses
+        condicion_ultimos_meses = "";
+
+        for (int i = 0; i < meses; i++) {
+            arreglo_condicion[i] = 0;
+        }
+        arreglo_condicion[tamanio_arreglo - 3] = 1;
+        for (int j = 0; j < meses; j++) {
+            condicion_ultimos_meses += "" + arreglo_condicion[j] + " ";
+        }
+        System.out.println(condicion_ultimos_meses);
+        condiciones.add(condicion_ultimos_meses);
     }
 
-    public void Solucionar() {
+
+
+public void Solucionar() {
         try {
             // Create a problem with variables and  constraints
             int cantidad_de_condiciones = condiciones.size();

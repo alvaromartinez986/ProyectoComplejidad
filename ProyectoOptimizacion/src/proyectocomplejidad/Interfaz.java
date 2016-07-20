@@ -34,35 +34,12 @@ public class Interfaz extends javax.swing.JFrame {
     DefaultTableModel modelResultado;
     DefaultTableModel modelResultado2;
 
-    int[] morrales = null;
-    int[] morrales2 = null;
-    String[] cajasEnMorrales = null;
-    String[] cajasEnMorrales2 = null;
-    double valorFO = 0;
-    int tamanoArregloResultado = 0;
-    int tamanoArregloResultado2 = 0;
-    //Arreglos donde cada pos es una columna de la tabla
-    String datosResultado[] = null;
-    String datosResultado2[] = null;
-    //arreglos que guardan lo que devuelve modelar() de la clase Modelo y Modelo2
-    String resultadoModelo[] = null;
-    String resultadoModelo2[] = null;
-
-    //Arreglo que guarda en cada pos la cadena de la distribucion de cajas en el morral de pos i+1. Para calcular abs
-    String ordenMorrales[] = null;
-    String ordenMorrales2[] = null;
-    int indiceordenMorrales = 0;
-    int indiceordenMorrales2 = 0;
-    //Para calcular los valores de abs  y mandarselo a la clase que construye el modelo 2
-    int pesoTotalMorral1 = 0;
-    int diferencias[] = null;//arreglo que almacena (cada diferencia del peso del morral 1 con el morral igual a numero de pos)= (cada abs)
 
     /*Constructor*/
     @SuppressWarnings("empty-statement")
     public Interfaz() {
         modelo = new ProyectoComplejidad();
         initComponents();
-        this.setTitle("Optimizacion Morrales");
         centrar_datos();
         modelCaja = (DefaultTableModel) tablaCaja.getModel();
         modelResultado = (DefaultTableModel) tablaResultado.getModel();
