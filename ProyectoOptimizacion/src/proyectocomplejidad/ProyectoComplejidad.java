@@ -31,12 +31,11 @@ public class ProyectoComplejidad {
     double[] ganancias; //ganancias calculadas para cada uno de los meses
     List<String> condiciones; //condiciones que seran agregadas al solver
     
-    public ProyectoComplejidad() throws IOException{
+    public ProyectoComplejidad(){
         meses=0;
         produccion_estimada=0;
         valor_bulto=0;
         condiciones = new ArrayList<String>();
-        Leer_archivo("entrada4.txt");
     }    
     
     private void Leer_archivo(String nombre_archivo) throws FileNotFoundException, IOException{
