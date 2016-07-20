@@ -27,6 +27,78 @@ public class ProyectoComplejidad {
      * @param args the command line arguments
      */
     int meses,produccion_estimada, valor_bulto;
+
+    public int getMeses() {
+        return meses;
+    }
+
+    public void setMeses(int meses) {
+        this.meses = meses;
+    }
+
+    public int getProduccion_estimada() {
+        return produccion_estimada;
+    }
+
+    public void setProduccion_estimada(int produccion_estimada) {
+        this.produccion_estimada = produccion_estimada;
+    }
+
+    public int getValor_bulto() {
+        return valor_bulto;
+    }
+
+    public void setValor_bulto(int valor_bulto) {
+        this.valor_bulto = valor_bulto;
+    }
+
+    public int[] getVector_temperatura() {
+        return vector_temperatura;
+    }
+
+    public void setVector_temperatura(int[] vector_temperatura) {
+        this.vector_temperatura = vector_temperatura;
+    }
+
+    public int[] getVector_precipitacion() {
+        return vector_precipitacion;
+    }
+
+    public void setVector_precipitacion(int[] vector_precipitacion) {
+        this.vector_precipitacion = vector_precipitacion;
+    }
+
+    public int[] getVector_demanda_minima() {
+        return vector_demanda_minima;
+    }
+
+    public void setVector_demanda_minima(int[] vector_demanda_minima) {
+        this.vector_demanda_minima = vector_demanda_minima;
+    }
+
+    public int[] getVector_demanda_maxima() {
+        return vector_demanda_maxima;
+    }
+
+    public void setVector_demanda_maxima(int[] vector_demanda_maxima) {
+        this.vector_demanda_maxima = vector_demanda_maxima;
+    }
+
+    public double[] getGanancias() {
+        return ganancias;
+    }
+
+    public void setGanancias(double[] ganancias) {
+        this.ganancias = ganancias;
+    }
+
+    public List<String> getCondiciones() {
+        return condiciones;
+    }
+
+    public void setCondiciones(List<String> condiciones) {
+        this.condiciones = condiciones;
+    }
     int[] vector_temperatura,vector_precipitacion, vector_demanda_minima,vector_demanda_maxima;
     double[] ganancias; //ganancias calculadas para cada uno de los meses
     List<String> condiciones; //condiciones que seran agregadas al solver
@@ -36,7 +108,7 @@ public class ProyectoComplejidad {
         produccion_estimada=0;
         valor_bulto=0;
         condiciones = new ArrayList<String>();
-        Leer_archivo("datosPruebaEntrada3Tam20.txt");
+        Leer_archivo("entrada4.txt");
     }    
     
     private void Leer_archivo(String nombre_archivo) throws FileNotFoundException, IOException{
