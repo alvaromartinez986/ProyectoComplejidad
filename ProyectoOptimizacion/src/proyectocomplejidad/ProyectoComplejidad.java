@@ -27,6 +27,78 @@ public class ProyectoComplejidad {
      * @param args the command line arguments
      */
     int meses,produccion_estimada, valor_bulto;
+
+    public int getMeses() {
+        return meses;
+    }
+
+    public void setMeses(int meses) {
+        this.meses = meses;
+    }
+
+    public int getProduccion_estimada() {
+        return produccion_estimada;
+    }
+
+    public void setProduccion_estimada(int produccion_estimada) {
+        this.produccion_estimada = produccion_estimada;
+    }
+
+    public int getValor_bulto() {
+        return valor_bulto;
+    }
+
+    public void setValor_bulto(int valor_bulto) {
+        this.valor_bulto = valor_bulto;
+    }
+
+    public int[] getVector_temperatura() {
+        return vector_temperatura;
+    }
+
+    public void setVector_temperatura(int[] vector_temperatura) {
+        this.vector_temperatura = vector_temperatura;
+    }
+
+    public int[] getVector_precipitacion() {
+        return vector_precipitacion;
+    }
+
+    public void setVector_precipitacion(int[] vector_precipitacion) {
+        this.vector_precipitacion = vector_precipitacion;
+    }
+
+    public int[] getVector_demanda_minima() {
+        return vector_demanda_minima;
+    }
+
+    public void setVector_demanda_minima(int[] vector_demanda_minima) {
+        this.vector_demanda_minima = vector_demanda_minima;
+    }
+
+    public int[] getVector_demanda_maxima() {
+        return vector_demanda_maxima;
+    }
+
+    public void setVector_demanda_maxima(int[] vector_demanda_maxima) {
+        this.vector_demanda_maxima = vector_demanda_maxima;
+    }
+
+    public double[] getGanancias() {
+        return ganancias;
+    }
+
+    public void setGanancias(double[] ganancias) {
+        this.ganancias = ganancias;
+    }
+
+    public List<String> getCondiciones() {
+        return condiciones;
+    }
+
+    public void setCondiciones(List<String> condiciones) {
+        this.condiciones = condiciones;
+    }
     int[] vector_temperatura,vector_precipitacion, vector_demanda_minima,vector_demanda_maxima;
     double[] ganancias; //ganancias calculadas para cada uno de los meses
     List<String> condiciones; //condiciones que seran agregadas al solver
@@ -95,8 +167,7 @@ public class ProyectoComplejidad {
         System.out.println("Valor bulto: "+valor_bulto);
     }
     
-    public void Preprocesamiento(){
-        
+    public void calcularGanancia(){
         //CALCULO DE LAS GANACIAS POR MES
         for(int i = 0; i < meses ; i++){
             if(produccion_estimada < vector_demanda_minima[i]){
@@ -111,7 +182,9 @@ public class ProyectoComplejidad {
             }
             System.out.print("Ganacia mes " + (i+1) + " : " + ganancias[i]+ "\n");            
         }
-        
+    }
+    
+    public void condicion4meses(){
         int[] arreglo_condicion = new int[meses];
         
         //Condiciones decision siembra y 4 meses de cultivo
@@ -121,7 +194,7 @@ public class ProyectoComplejidad {
         }
         
         String condicion_meses = "";
-        for(int i = 0 ; i < meses-3 ; i++){
+        for(int i = 0; i < meses-3 ; i++){
             arreglo_condicion[i] = 1;
             arreglo_condicion[i+1] = 1;
             arreglo_condicion[i+2] = 1;
@@ -137,20 +210,18 @@ public class ProyectoComplejidad {
                 arreglo_condicion[h] = 0; 
             }
         }
-        
-        //EVALUAR EN QUE MESES NO SE PUEDE SEMBRAR POR CONDICIONES INICIALES, por lo cual esta restriccion
-        //se añadira a simplex por medio de la condicion Mesi = 0 -> que significa que no hay siembra en dicho mes
-        
+    }
+    
+    public void condicionesTiempo(){
+        String condicion_meses_no_siembra ="";
+        int[] arreglo_condicion = new int[meses];
         for(int i = 0 ; i < meses ; i++){
             arreglo_condicion[i] = 0; 
         }
-        
-        String condicion_meses_no_siembra ="";
-        
         System.out.println("==========CONDICIONES MESES EN LOS QUE NO SE CULTIVA==========");
-        for(int i = 0; i < meses ; i++){
-            if(vector_temperatura[i] > 20  || vector_temperatura[i] < 18 || vector_precipitacion[i] < 63){
-                System.out.print("No se puede sembrar en el mes: " + (i+1) + "\n");
+        for(int i = 3; i < meses ; i++){
+            if(vector_temperatura[i-3] > 20  || vector_temperatura[i-3] < 18 || vector_precipitacion[i-3] < 63){
+                System.out.print("No se puede cosechar en el mes: " + (i) + "\n");
                 
                 arreglo_condicion[i] = 1; 
                 for(int j = 0 ; j < meses ; j++){
@@ -163,49 +234,118 @@ public class ProyectoComplejidad {
                 for(int h = 0 ; h < meses ; h++){
                     arreglo_condicion[h] = 0; 
                 }
-                //Aqui se debe hacer algo para adicionar esta restriccion a simplex
             }
         }
-        
-        
-        
-        System.out.println("==========CONDICIONES NO SE PUEDE SEMBRAR EN LOS ULTIMOS MESES==========");
+    }
+    
+    public void condicionPrimerosMeses(){
+        int[] arreglo_condicion = new int[meses];
+        System.out.println("==========CONDICIONES NO SE PUEDE COSECHAR EN LOS PRIMEROS 3 MESES==========");
         //Condicion no se puede sembrar en los ultimos 3 meses porque no se alcanzaria a recoger la cosecha
-        String condicion_ultimos_meses ="";
-        int tamanio_arreglo = arreglo_condicion.length;
+        String condicion_primeros_meses ="";
         for(int i = 0 ; i < meses ; i++){
             arreglo_condicion[i] = 0; 
         }
-        arreglo_condicion[tamanio_arreglo-1]=1;
-                
-        for(int j = 0 ; j < meses ; j++){
-            condicion_ultimos_meses += ""+arreglo_condicion[j]+" ";
-        }
-        System.out.println(condicion_ultimos_meses);
-        condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses
-        condicion_ultimos_meses ="";
         
-        for(int i = 0 ; i < meses ; i++){
-            arreglo_condicion[i] = 0; 
-        }
-        arreglo_condicion[tamanio_arreglo-2]=1;
-        for(int j = 0 ; j < meses ; j++){
-            condicion_ultimos_meses += ""+arreglo_condicion[j]+" ";
-        }
-        System.out.println(condicion_ultimos_meses);
-        condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses
-        condicion_ultimos_meses ="";
+        for(int i=0; i<3 ; i++){
+            arreglo_condicion[i]=1;
+            for(int j = 0 ; j < meses ; j++){
+                condicion_primeros_meses += ""+arreglo_condicion[j]+" ";
+            }
+            condiciones.add(condicion_primeros_meses); 
+            condicion_primeros_meses="";
+        }        
+    }
+    
+    public void Preprocesamiento(){
         
-        for(int i = 0 ; i < meses ; i++){
-            arreglo_condicion[i] = 0; 
-        }
-        arreglo_condicion[tamanio_arreglo-3]=1;
-        for(int j = 0 ; j < meses ; j++){
-            condicion_ultimos_meses += ""+arreglo_condicion[j]+" ";
-        }
-        System.out.println(condicion_ultimos_meses);
-        condiciones.add(condicion_ultimos_meses); //<============ Condicion imposibilidad de cultivo en los ultimos 3 de meses    
+//        //CALCULO DE LAS GANACIAS POR MES
+//        for(int i = 0; i < meses ; i++){
+//            if(produccion_estimada < vector_demanda_minima[i]){
+//                ganancias[i] = valor_bulto*produccion_estimada*0.5;              
+//            }else{
+//                if(produccion_estimada <= vector_demanda_maxima[i]){
+//                    ganancias[i] = valor_bulto*produccion_estimada;
+//                }else{
+//                    ganancias[i] = (valor_bulto*vector_demanda_maxima[i]) + (valor_bulto*0.5*(produccion_estimada-vector_demanda_maxima[i]));
+//                }
+//                
+//            }
+//            System.out.print("Ganacia mes " + (i+1) + " : " + ganancias[i]+ "\n");            
+//        }
+        calcularGanancia();
+
+//        
+//        //Condiciones decision siembra y 4 meses de cultivo
+//        System.out.println("==========CONDICIONES CULTIVO DURA 4 MESES==========");
+//        for(int i = 0 ; i < meses ; i++){
+//            arreglo_condicion[i] = 0; 
+//        }
+//        
+//        String condicion_meses = "";
+//        for(int i = 0 ; i < meses-3 ; i++){
+//            arreglo_condicion[i] = 1;
+//            arreglo_condicion[i+1] = 1;
+//            arreglo_condicion[i+2] = 1;
+//            arreglo_condicion[i+3] = 1;
+//            for(int j = 0 ; j < meses ; j++){
+//                condicion_meses += ""+arreglo_condicion[j]+" ";
+//            }
+//            System.out.println(condicion_meses);
+//            condiciones.add(condicion_meses); //<============ Condicion agregada cultivo de meses
+//            
+//            condicion_meses = "";
+//            for(int h = 0 ; h < meses ; h++){
+//                arreglo_condicion[h] = 0; 
+//            }
+//        }
         
+        condicion4meses();
+        condicionesTiempo();
+        
+        //EVALUAR EN QUE MESES NO SE PUEDE SEMBRAR POR CONDICIONES INICIALES, por lo cual esta restriccion
+        //se añadira a simplex por medio de la condicion Mesi = 0 -> que significa que no hay siembra en dicho mes
+       
+        
+//        String condicion_meses_no_siembra ="";
+//        
+//        System.out.println("==========CONDICIONES MESES EN LOS QUE NO SE CULTIVA==========");
+//        for(int i = 3; i < meses ; i++){
+//            if(vector_temperatura[i-3] > 20  || vector_temperatura[i-3] < 18 || vector_precipitacion[i-3] < 63){
+//                System.out.print("No se puede sembrar en el mes: " + (i-2) + "\n");
+//                
+//                arreglo_condicion[i] = 1; 
+//                for(int j = 0 ; j < meses ; j++){
+//                    condicion_meses_no_siembra += ""+arreglo_condicion[j]+" ";
+//                }
+//                System.out.println(condicion_meses_no_siembra);
+//                condiciones.add(condicion_meses_no_siembra); // <============ Condicion de imposibilidad de cultivo agregada
+//                
+//                condicion_meses_no_siembra = "";
+//                for(int h = 0 ; h < meses ; h++){
+//                    arreglo_condicion[h] = 0; 
+//                }
+//                //Aqui se debe hacer algo para adicionar esta restriccion a simplex
+//            }
+//        }
+//        
+//        System.out.println("==========CONDICIONES NO SE PUEDE COSECHAR EN LOS PRIMEROS 3 MESES==========");
+//        //Condicion no se puede sembrar en los ultimos 3 meses porque no se alcanzaria a recoger la cosecha
+//        String condicion_primeros_meses ="";
+//        for(int i = 0 ; i < meses ; i++){
+//            arreglo_condicion[i] = 0; 
+//        }
+//        
+//        for(int i=0; i<3 ; i++){
+//            arreglo_condicion[i]=1;
+//            for(int j = 0 ; j < meses ; j++){
+//                condicion_primeros_meses += ""+arreglo_condicion[j]+" ";
+//            }
+//            condiciones.add(condicion_primeros_meses); 
+//            condicion_primeros_meses="";
+//        }       
+//        
+        condicionPrimerosMeses();
     }
     
     public void Solucionar(){
@@ -218,11 +358,11 @@ public class ProyectoComplejidad {
                 solver.setBinary(s, true);
             }
 
-            // add constraints
+            // add constraints 4 meses
             for(int i = 0 ; i < meses-3; i++){
                 solver.strAddConstraint(condiciones.get(i), LpSolve.LE, 1);
             }
-            
+            //remaining
             for(int i = meses-3 ; i<cantidad_de_condiciones; i++){
                  solver.strAddConstraint(condiciones.get(i), LpSolve.EQ, 0);
             }
@@ -232,10 +372,9 @@ public class ProyectoComplejidad {
             int tamanio_ganancias = ganancias.length;
             String FO = "";
             
-            for(int i = 3; i<tamanio_ganancias; i++){
+            for(int i = 0; i<tamanio_ganancias; i++){
                 FO += ganancias[i]+" ";
             }
-            FO += "0 0 0";
             System.out.println("Funcion Maximixar: "+FO);
             //solver.strSetObjFn("5850000 2925000 5850000 2925000 5850000 0 0 0");
             solver.strSetObjFn(FO);
